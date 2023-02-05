@@ -5,7 +5,7 @@ import { PageLayout } from './components/PageLayout/PageLayout';
 import { LOCAL_STORAGE_JWT_TOKEN_KEY } from './constants/constants';
 import { UserContext } from './contexts/UserContextWrapper';
 // import { Expenses } from './pages/Expenses/Expenses';
-import { Attendees } from './pages/Expenses/Attendees';
+import { Attendees } from './pages/Attendees/Attendees';
 import { Login } from './pages/Login/Login';
 import { NotFound } from './pages/NotFound/NotFound';
 import { Register } from './pages/Register/Register';

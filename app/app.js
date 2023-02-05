@@ -44,55 +44,55 @@ const verifyToken = (req, res, next) => {
     }
 }
 
-app.get('/expenses', verifyToken, (req, res) => {
+app.get('/attendees', verifyToken, (req, res) => {
     const user = getUserFromToken(req);
     
-    connection.execute('SELECT * FROM expenses WHERE userId=?', [user.id], (err, expenses) => {
-        res.send(expenses);
+    connection.execute('SELECT * FROM attendees WHERE userId=?', [user.id], (err, attendees) => {
+        res.send(attendees);
     });
 });
 
-app.post('/expenses', verifyToken, (req, res) => {
-    const { type, amount, timestamp } = req.body;
+app.post('/attendees', verifyToken, (req, res) => {
+    // const { type, amount, timestamp } = req.body;
     const { id } = getUserFromToken(req);
 
-    const sqlQuery = timestamp ?
-    'INSERT INTO expenses (type, amount, userId, timestamp) VALUES (?, ?, ?, ?)' :
-    'INSERT INTO expenses (type, amount, userId) VALUES (?, ?, ?)';
+    // const sqlQuery = timestamp ?
+    // 'INSERT INTO expenses (type, amount, userId, timestamp) VALUES (?, ?, ?, ?)' :
+    // 'INSERT INTO expenses (type, amount, userId) VALUES (?, ?, ?)';
 
-    const data = [type, amount, id];
-    if (timestamp) {
-        data.push(timestamp);
-    }
+    // const data = [type, amount, id];
+    // if (timestamp) {
+    //     data.push(timestamp);
+    // }
 
     connection.execute(
-        sqlQuery,
+        // sqlQuery,
         data,
         () => {
             connection.execute(
-                'SELECT * FROM expenses WHERE userId=?', 
+                'SELECT * FROM attendees WHERE userId=?', 
                 [id], 
-                (err, expenses) => {
-                    res.send(expenses);
+                (err, attendees) => {
+                    res.send(attendees);
                 }
             )
         }
     )
 });
 
-app.delete('/expenses/:id', verifyToken, (req, res) => {
+app.delete('/attendees/:id', verifyToken, (req, res) => {
     const { id } = req.params;
     const { id: userId } = getUserFromToken(req);
 
     connection.execute(
-        'DELETE FROM expenses WHERE id=? AND userId=?',
+        'DELETE FROM attendees WHERE id=? AND userId=?',
         [id, userId],
         () => {
             connection.execute(
-                'SELECT * FROM expenses WHERE userId=?', 
+                'SELECT * FROM attendees WHERE userId=?', 
                 [userId], 
-                (err, expenses) => {
-                    res.send(expenses);
+                (err, attendees) => {
+                    res.send(attendees);
                 }
             )
         }

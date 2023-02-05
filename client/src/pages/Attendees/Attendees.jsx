@@ -5,7 +5,7 @@ import { Form } from "../../components/Form/Form";
 import { Input } from "../../components/Input/Input";
 import { UserContext } from '../../contexts/UserContextWrapper';
 import { LOCAL_STORAGE_JWT_TOKEN_KEY } from '../../constants/constants';
-// import { DateTime } from 'luxon';
+import { DateTime } from 'luxon';
 
 const AttendeesList = styled.ul`
     display: flex;
@@ -138,7 +138,7 @@ export const Attendees = () => {
         }
     }
 
-    // const totalSum = expenses.reduce((totalSum, expense) => totalSum += parseInt(expense.amount), 0);
+    const totalSum = attendees.reduce((totalSum, attendees) => totalSum += parseInt(attendees.amount), 0);
 
     return (
         <AttendeesList>
@@ -170,16 +170,16 @@ export const Attendees = () => {
                 />
                 <Button>Add</Button>
             </Form>
-            {/* <h2>Total spent: €{totalSum}</h2> */}
+            <h2>Total spent: €{totalSum}</h2>
             {attendees.map((exp) => (
                 <AttendeesListItem key={exp.id} onClick={() => handleDeleteAttendees(exp.id)}>
                     <HoverOverlay>
                         <HoverOverlayContent>DELETE</HoverOverlayContent>
                     </HoverOverlay>
-                    {/* <AttendeesType>
+                    <AttendeesType>
                         {exp.type} ({DateTime.fromISO(exp.timestamp).toFormat('yyyy-LL-dd HH:mm')})
                     </AttendeesType>
-                    <AttendeesAmount>€{exp.amount}</AttendeesAmount> */}
+                    <AttendeesAmount>€{exp.amount}</AttendeesAmount>
                 </AttendeesListItem>
             ))}
         </AttendeesList>
