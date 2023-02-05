@@ -1,4 +1,4 @@
-# Expenses tracker
+# Attendees registration form
 
 ## BE instructions
 1) Run `npm install`
