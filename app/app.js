@@ -53,10 +53,26 @@ app.get('/attendees', verifyToken, (req, res) => {
 });
 
 app.post('/attendees', verifyToken, (req, res) => {
-    // const { type, amount, timestamp } = req.body;
+    const { name, surname, email, phone } = req.body;
     const { id } = getUserFromToken(req);
 
-    // const sqlQuery = timestamp ?
+    connection.execute(
+        'INSERT INTO attendees (name, surname, email, phone) VALUES (?, ?, ?, ?)',
+        [name, surname, email, phone],
+        () => {
+            connection.execute(
+                'SELECT * FROM attendees WHERE userId=?',
+                [id],
+                (err, attendees) => {
+                    res.send(attendees);
+                }
+            )
+        }
+    )
+}
+);
+
+    // const attendees = timestamp ?
     // 'INSERT INTO expenses (type, amount, userId, timestamp) VALUES (?, ?, ?, ?)' :
     // 'INSERT INTO expenses (type, amount, userId) VALUES (?, ?, ?)';
 
@@ -65,20 +81,19 @@ app.post('/attendees', verifyToken, (req, res) => {
     //     data.push(timestamp);
     // }
 
-    connection.execute(
-        // sqlQuery,
-        data,
-        () => {
-            connection.execute(
-                'SELECT * FROM attendees WHERE userId=?', 
-                [id], 
-                (err, attendees) => {
-                    res.send(attendees);
-                }
-            )
-        }
-    )
-});
+    // connection.execute(
+    //     sqlQuery,
+    //     data,
+    //     () => {
+    //         connection.execute(
+    //             'SELECT * FROM attendees WHERE userId=?', 
+    //             [id], 
+    //             (err, attendees) => {
+    //                 res.send(attendees);
+    //             }
+    //         )
+    //     });
+    // // });
 
 app.delete('/attendees/:id', verifyToken, (req, res) => {
     const { id } = req.params;
@@ -150,19 +165,19 @@ app.get('/token/verify', (req, res) => {
     }
 });
 
-app.get('/test/:id', async (req, res) => {
-    const { id } = req.params;
-    try {
-        const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`);
-        const data = await response.json();
+// app.get('/test/:id', async (req, res) => {
+//     const { id } = req.params;
+//     try {
+//         const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`);
+//         const data = await response.json();
 
-        connection.execute('INSERT INTO test(title) VALUES (?)', [data.title], (err, result) => {
-            res.send(data);
-        });
-    } catch(e) {
-        res.send('Something went wrong');
-    }
-});
+//         connection.execute('INSERT INTO test(title) VALUES (?)', [data.title], (err, result) => {
+//             res.send(data);
+//         });
+//     } catch(e) {
+//         res.send('Something went wrong');
+//     }
+// });
 
 // fetch('https://jsonplaceholder.typicode.com/todos/1')
 //     .then(res => res.json())
