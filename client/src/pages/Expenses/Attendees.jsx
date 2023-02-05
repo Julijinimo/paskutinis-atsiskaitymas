@@ -1,0 +1,187 @@
+import { useContext, useEffect, useState } from "react";
+import styled from 'styled-components';
+import { Button } from "../../components/Button/Button";
+import { Form } from "../../components/Form/Form";
+import { Input } from "../../components/Input/Input";
+import { UserContext } from '../../contexts/UserContextWrapper';
+import { LOCAL_STORAGE_JWT_TOKEN_KEY } from '../../constants/constants';
+// import { DateTime } from 'luxon';
+
+const AttendeesList = styled.ul`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+`;
+
+const HoverOverlay = styled.div`
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    content: '';
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    width: 100%;
+`;
+
+const HoverOverlayContent = styled.div`
+    color: red;
+    font-size: 16px;
+`;
+
+const AttendeesListItem = styled.li`
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0 5px 7px -1px rgb(51 51 51 / 23%);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    padding: 10px 30px;
+    position: relative;
+
+    ${HoverOverlay} {
+        visibility: hidden;
+    }
+
+    &:hover {
+        ${HoverOverlay} {
+            visibility: visible;
+        }
+    }
+`;
+
+const AttendeesAmount = styled.span`
+    color: #35d8ac;
+    font-size: 34px;
+    font-weight: 700;
+`;
+
+const AttendeesType = styled.span`
+    color: #979cb0;
+    font-size: 20px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+`;
+
+export const Attendees = () => {
+    const [attendees, setAttendees] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [name, setName] = useState('');
+    const [surname, setSurname] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const { user } = useContext(UserContext);
+
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_API_URL}/attendees?userId=${user.id}`, {
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem(LOCAL_STORAGE_JWT_TOKEN_KEY)
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.error) {
+                    setAttendees(data);
+                }
+                setIsLoading(false);
+            });
+    }, [user.id]);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    const handleAttendeesAdd = () => {
+        fetch(`${process.env.REACT_APP_API_URL}/attendees`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: 'Bearer ' + localStorage.getItem(LOCAL_STORAGE_JWT_TOKEN_KEY)
+            },
+            body: JSON.stringify({
+                name, 
+                surname,
+                email,
+                phone,
+                userId: user.id,
+            })
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            if (!data.error) {
+                setAttendees(data);
+                setName('');
+                setSurname('');
+                setEmail('');
+                setPhone('');
+            }
+        });
+    }
+
+    const handleDeleteAttendees = (id) => {
+        if (window.confirm('Do you really want to delete this attendee?')) {
+            fetch(`${process.env.REACT_APP_API_URL}/attendees/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem(LOCAL_STORAGE_JWT_TOKEN_KEY)
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                setAttendees(data);
+            });
+        }
+    }
+
+    // const totalSum = expenses.reduce((totalSum, expense) => totalSum += parseInt(expense.amount), 0);
+
+    return (
+        <AttendeesList>
+            <Form onSubmit={handleAttendeesAdd}>
+                <Input 
+                    placeholder="Name" 
+                    required 
+                    onChange={(e) => setName(e.target.value)}
+                    value={name}
+                />
+                <Input 
+                    placeholder="Surname" 
+                    // type="number" 
+                    required 
+                    onChange={(e) => setSurname(e.target.value)}
+                    value={surname}
+                />
+                <Input 
+                    placeholder="Email"
+                    // type="datetime-local"
+                    onChange={(e) => setEmail(e.target.value)}
+                    value={email}
+                />
+                <Input 
+                    placeholder="Phone"
+                    // type="datetime-local"
+                    onChange={(e) => setPhone(e.target.value)}
+                    value={phone}
+                />
+                <Button>Add</Button>
+            </Form>
+            {/* <h2>Total spent: €{totalSum}</h2> */}
+            {attendees.map((exp) => (
+                <AttendeesListItem key={exp.id} onClick={() => handleDeleteAttendees(exp.id)}>
+                    <HoverOverlay>
+                        <HoverOverlayContent>DELETE</HoverOverlayContent>
+                    </HoverOverlay>
+                    {/* <AttendeesType>
+                        {exp.type} ({DateTime.fromISO(exp.timestamp).toFormat('yyyy-LL-dd HH:mm')})
+                    </AttendeesType>
+                    <AttendeesAmount>€{exp.amount}</AttendeesAmount> */}
+                </AttendeesListItem>
+            ))}
+        </AttendeesList>
+    );
+}
