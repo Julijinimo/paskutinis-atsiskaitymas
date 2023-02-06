@@ -23,10 +23,17 @@ export const PageLayout = () => {
         navigate('/login');
     }
 
+    const handleGoToRegister = () => {
+        localStorage.removeItem(LOCAL_STORAGE_JWT_TOKEN_KEY);
+        setUser(null);
+        navigate('/register');
+    }
+
     return (
         <div>
             <Header>
                 <Button onClick={handleLogout}>Log out</Button>
+                <Button onClick={handleGoToRegister}>Register</Button>
             </Header>
             <Outlet />
         </div>

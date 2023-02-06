@@ -189,22 +189,23 @@ export const Attendees = () => {
                 />
                 <Button>Add</Button>
             </Form>
+            <h2>Attendees list:</h2>
             {attendees.map((att) => (
                 <AttendeesListItem key={att.id} onClick={() => handleDeleteAttendees(att.id)}>
                     <HoverOverlay>
                         <HoverOverlayContent>DELETE</HoverOverlayContent>
                     </HoverOverlay>
                     <AttendeesName>
-                        {att.name}
+                        Name: {att.name}
                     </AttendeesName>
                     <AttendeesSurname>
-                        {att.surname} 
+                        Surname: {att.surname} 
                     </AttendeesSurname>
                     <AttendeesEmail>
-                        {att.email} 
+                        Email: {att.email} 
                     </AttendeesEmail>
                     <AttendeesPhone>
-                        {att.phone} 
+                        Phone: {att.phone} 
                     </AttendeesPhone>
                 </AttendeesListItem>
             ))}
