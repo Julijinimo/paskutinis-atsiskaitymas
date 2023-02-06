@@ -31,12 +31,6 @@ function App() {
         }
       });
     }
-
-    // fetch(`${process.env.REACT_APP_API_URL}/test`)
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     console.log(data);
-    //   });
   }, []);
 
   return (
