@@ -75,22 +75,26 @@ export const Register = () => {
                 <h1>Organizers registration</h1>
                 <Input 
                     placeholder="Email"
+                    required
                     type="email" 
                     onChange={(e) => setEmail(e.target.value)}
                     value={email}
                 />
                 <Input 
                     placeholder="Name" 
+                    required
                     onChange={(e) => setName(e.target.value)}
                     value={name}
                 />
                 <Input 
                     placeholder="Surname" 
+                    required
                     onChange={(e) => setSurname(e.target.value)}
                     value={surname}
                 />
                 <Input 
                     placeholder="Password" 
+                    required
                     type="password"
                     onChange={(e) => setPassword(e.target.value)}
                     value={password}

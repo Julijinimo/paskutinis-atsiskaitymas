@@ -3,7 +3,6 @@ const express = require('express');
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const fetch = require('node-fetch');
 
 require('dotenv').config();
 
@@ -21,13 +20,6 @@ const mysqlConfig = {
 };
 
 const connection = mysql.createConnection(mysqlConfig);
-
-// app.get('/expenses/:userId', (req, res) => {
-//     const { userId } = req.params;
-//     connection.execute('SELECT * FROM expenses WHERE userId=?', [userId], (err, expenses) => {
-//         res.send(expenses);
-//     });
-// });
 
 const getUserFromToken = (req) => {
     const token = req.headers.authorization.split(' ')[1];
@@ -56,13 +48,9 @@ app.post('/attendees', verifyToken, (req, res) => {
     const { name, surname, email, phone } = req.body;
     const { id } = getUserFromToken(req);
 
-    const sqlQuery = 
-    'INSERT INTO attendees (name, surname, email, phone, userId) VALUES (?, ?, ?, ?, ?)';
-
-    const data = [name, surname, email, phone, id];
     connection.execute(
-        sqlQuery,
-        data,
+        'INSERT INTO attendees (name, surname, email, phone, userId) VALUES (?, ?, ?, ?, ?)',
+        [name, surname, email, phone, id],
         () => {
             connection.execute(
                 'SELECT * FROM attendees WHERE userId=?', 
@@ -144,26 +132,6 @@ app.get('/token/verify', (req, res) => {
         res.send({ error: 'Invalid Token' });
     }
 });
-
-// app.get('/test/:id', async (req, res) => {
-//     const { id } = req.params;
-//     try {
-//         const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`);
-//         const data = await response.json();
-
-//         connection.execute('INSERT INTO test(title) VALUES (?)', [data.title], (err, result) => {
-//             res.send(data);
-//         });
-//     } catch(e) {
-//         res.send('Something went wrong');
-//     }
-// });
-
-// fetch('https://jsonplaceholder.typicode.com/todos/1')
-//     .then(res => res.json())
-//     .then(data => {
-//         console.log(data);
-//     })
 
 const PORT = 8080;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

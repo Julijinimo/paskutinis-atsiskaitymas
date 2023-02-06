@@ -82,11 +82,13 @@ export const Login = () => {
                 <h1>Organizers login</h1>
                 <Input 
                     placeholder="Email" 
+                    required
                     onChange={(e) => setEmail(e.target.value)}
                     value={email}
                 />
                 <Input 
                     placeholder="Password" 
+                    required
                     type="password"
                     onChange={(e) => setPassword(e.target.value)}
                     value={password}
