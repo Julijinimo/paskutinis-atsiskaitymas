@@ -56,44 +56,24 @@ app.post('/attendees', verifyToken, (req, res) => {
     const { name, surname, email, phone } = req.body;
     const { id } = getUserFromToken(req);
 
+    const sqlQuery = 
+    'INSERT INTO attendees (name, surname, email, phone, userId) VALUES (?, ?, ?, ?, ?)';
+
+    const data = [name, surname, email, phone, id];
     connection.execute(
-        'INSERT INTO attendees (name, surname, email, phone) VALUES (?, ?, ?, ?)',
-        [name, surname, email, phone],
+        sqlQuery,
+        data,
         () => {
             connection.execute(
-                'SELECT * FROM attendees WHERE userId=?',
-                [id],
+                'SELECT * FROM attendees WHERE userId=?', 
+                [id], 
                 (err, attendees) => {
                     res.send(attendees);
                 }
             )
         }
     )
-}
-);
-
-    // const attendees = timestamp ?
-    // 'INSERT INTO expenses (type, amount, userId, timestamp) VALUES (?, ?, ?, ?)' :
-    // 'INSERT INTO expenses (type, amount, userId) VALUES (?, ?, ?)';
-
-    // const data = [type, amount, id];
-    // if (timestamp) {
-    //     data.push(timestamp);
-    // }
-
-    // connection.execute(
-    //     sqlQuery,
-    //     data,
-    //     () => {
-    //         connection.execute(
-    //             'SELECT * FROM attendees WHERE userId=?', 
-    //             [id], 
-    //             (err, attendees) => {
-    //                 res.send(attendees);
-    //             }
-    //         )
-    //     });
-    // // });
+});
 
 app.delete('/attendees/:id', verifyToken, (req, res) => {
     const { id } = req.params;

@@ -5,7 +5,6 @@ import { Form } from "../../components/Form/Form";
 import { Input } from "../../components/Input/Input";
 import { UserContext } from '../../contexts/UserContextWrapper';
 import { LOCAL_STORAGE_JWT_TOKEN_KEY } from '../../constants/constants';
-import { DateTime } from 'luxon';
 
 const AttendeesList = styled.ul`
     display: flex;
@@ -53,13 +52,34 @@ const AttendeesListItem = styled.li`
     }
 `;
 
-const AttendeesAmount = styled.span`
-    color: #35d8ac;
-    font-size: 34px;
-    font-weight: 700;
+const AttendeesName = styled.span`
+    color: #979cb0;
+    font-size: 20px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 `;
 
-const AttendeesType = styled.span`
+const AttendeesSurname = styled.span`
+    color: #979cb0;
+    font-size: 20px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+`;
+
+const AttendeesEmail = styled.span`
+    color: #979cb0;
+    font-size: 20px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+`;
+
+const AttendeesPhone = styled.span`
     color: #979cb0;
     font-size: 20px;
     font-weight: 600;
@@ -138,48 +158,54 @@ export const Attendees = () => {
         }
     }
 
-    const totalSum = attendees.reduce((totalSum, attendees) => totalSum += parseInt(attendees.amount), 0);
-
     return (
         <AttendeesList>
             <Form onSubmit={handleAttendeesAdd}>
                 <Input 
                     placeholder="Name" 
+                    type="text"
                     required 
                     onChange={(e) => setName(e.target.value)}
                     value={name}
                 />
                 <Input 
                     placeholder="Surname" 
-                    // type="number" 
                     required 
                     onChange={(e) => setSurname(e.target.value)}
                     value={surname}
                 />
                 <Input 
                     placeholder="Email"
-                    // type="datetime-local"
+                    required
+                    type="email"
                     onChange={(e) => setEmail(e.target.value)}
                     value={email}
                 />
                 <Input 
                     placeholder="Phone"
-                    // type="datetime-local"
+                    required
                     onChange={(e) => setPhone(e.target.value)}
                     value={phone}
                 />
                 <Button>Add</Button>
             </Form>
-            <h2>Total spent: €{totalSum}</h2>
-            {attendees.map((exp) => (
-                <AttendeesListItem key={exp.id} onClick={() => handleDeleteAttendees(exp.id)}>
+            {attendees.map((att) => (
+                <AttendeesListItem key={att.id} onClick={() => handleDeleteAttendees(att.id)}>
                     <HoverOverlay>
                         <HoverOverlayContent>DELETE</HoverOverlayContent>
                     </HoverOverlay>
-                    <AttendeesType>
-                        {exp.type} ({DateTime.fromISO(exp.timestamp).toFormat('yyyy-LL-dd HH:mm')})
-                    </AttendeesType>
-                    <AttendeesAmount>€{exp.amount}</AttendeesAmount>
+                    <AttendeesName>
+                        {att.name}
+                    </AttendeesName>
+                    <AttendeesSurname>
+                        {att.surname} 
+                    </AttendeesSurname>
+                    <AttendeesEmail>
+                        {att.email} 
+                    </AttendeesEmail>
+                    <AttendeesPhone>
+                        {att.phone} 
+                    </AttendeesPhone>
                 </AttendeesListItem>
             ))}
         </AttendeesList>
