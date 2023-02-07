@@ -3,7 +3,7 @@
 ## BE instructions
 1) Import SQL database into MYSQL WORKBENCH or OTHER SQL DB
 2) Run `npm install` (in app folder)
-3) Fill in `.env` variables
+3) Fill in `.env` variables (in app folder)
 4) Run `npm start`
 
 ## FE instructions
