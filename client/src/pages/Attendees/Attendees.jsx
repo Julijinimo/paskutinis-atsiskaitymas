@@ -88,6 +88,11 @@ const AttendeesPhone = styled.span`
     overflow: hidden;
 `;
 
+const ErrorStyled = styled.div`
+    color: red;
+    text-align: center;
+`;
+
 export const Attendees = () => {
     const [attendees, setAttendees] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -95,6 +100,7 @@ export const Attendees = () => {
     const [surname, setSurname] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
+    const [error, setError] = useState('');
     const { user } = useContext(UserContext);
 
     useEffect(() => {
@@ -131,17 +137,29 @@ export const Attendees = () => {
                 userId: user.id,
             })
         })
-        .then((res) => res.json())
-        .then((data) => {
-            if (!data.error) {
-                setAttendees(data);
-                setName('');
-                setSurname('');
-                setEmail('');
-                setPhone('');
+        .then((res) => {
+            if (res.status === 400) {
+                throw new Error('User already exists');
             }
-        });
-    }
+
+            if (!res.ok) {
+                throw new Error('Something went wrong');
+            }
+
+            return res.json();
+        })
+        .then((data) => {
+            setAttendees(data);
+            setName('');
+            setSurname('');
+            setEmail('');
+                setPhone('');
+        })
+        .catch((e) => {
+            setError(e.message);
+            setIsLoading(false);
+        })
+    };
 
     const handleDeleteAttendees = (id) => {
         if (window.confirm('Do you really want to delete this attendee?')) {
@@ -187,6 +205,7 @@ export const Attendees = () => {
                     onChange={(e) => setPhone(e.target.value)}
                     value={phone}
                 />
+                {error && <ErrorStyled>{error}</ErrorStyled>}
                 <Button>Add</Button>
             </Form>
             <h2>Attendees list:</h2>
@@ -210,5 +229,6 @@ export const Attendees = () => {
                 </AttendeesListItem>
             ))}
         </AttendeesList>
+        
     );
 }

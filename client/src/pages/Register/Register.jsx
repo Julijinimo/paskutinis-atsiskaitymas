@@ -58,7 +58,7 @@ export const Register = () => {
 
             return res.json();
         })
-        .then((data) => {
+        .then(() => {
             navigate('/login');
             setIsLoading(false);
             setError('');
